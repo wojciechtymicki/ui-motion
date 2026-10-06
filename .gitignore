@@ -1,0 +1,7 @@
+.venv/
+node_modules/
+__pycache__/
+tests/player-screenshot.png
+.DS_Store
+*.pyc
+tests/fixtures/out/

@@ -1,0 +1,81 @@
+<!doctype html>
+<!--
+  {{NAME}} — implements motion-spec.md in this folder.
+  Every visual state is set inside seek(t). No CSS transitions, no setTimeout,
+  no Math.random. The player and every capture script call window.__motion.seek(t).
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{NAME}}</title>
+<style>
+  /* ---- tokens: replace with the real ones from Figma / the product ---- */
+  :root {
+    --bg: #FFFFFF;
+    --ink: #18181B;
+    --muted: #A1A1AA;
+    --accent: #2F5FD0;
+    --radius: 16px;
+    --font: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+
+  /* ---- page chrome (standalone vs embedded in the player / capture) ---- */
+  html, body { margin: 0; height: 100%; }
+  body { display: grid; place-items: center; background: #DCDCE0; font-family: var(--font); }
+  html.motion-embed body { display: block; background: transparent; }
+  html.motion-render body { background: transparent; }
+
+  #stage {
+    position: relative;
+    overflow: hidden;
+    background: var(--bg);
+    color: var(--ink);
+    /* width/height are set by motion-runtime.js from Motion.register */
+  }
+  html.motion-render #stage.alpha { background: transparent; }
+
+  /* Elements are positioned once here; seek(t) only writes transform/opacity. */
+  .el { position: absolute; }
+</style>
+</head>
+<body>
+<div id="stage">
+  <!-- product content goes here -->
+  <div class="el" id="dot" style="left: 0; top: 0; width: 48px; height: 48px; border-radius: 24px; background: var(--accent)"></div>
+</div>
+
+<script src="motion-runtime.js"></script>
+<script>
+  const { tween, springTo, spring, stagger, ease, mix, clamp, reduced } = Motion;
+
+  const W = {{WIDTH}}, H = {{HEIGHT}};
+  const dot = document.getElementById("dot");
+
+  // Precompute springs once: they are closed-form and stateless.
+  const enter = spring({ stiffness: 260, damping: 32 });
+
+  Motion.register({
+    name: "{{NAME}}",
+    version: 1,
+    duration: {{DURATION}},
+    fps: {{FPS}},
+    width: W,
+    height: H,
+    loops: false,
+    seek(t) {
+      // Reduced motion: no travel, a short opacity change only.
+      if (reduced) {
+        const o = tween(t, 0, 0.2, 0, 1, ease.linear);
+        dot.style.opacity = o;
+        dot.style.transform = `translate(${W / 2 - 24}px, ${H / 2 - 24}px)`;
+        return;
+      }
+      const x = springTo(t, 0.1, -60, W / 2 - 24, enter);
+      dot.style.opacity = tween(t, 0.1, 0.12, 0, 1, ease.linear);
+      dot.style.transform = `translate(${x}px, ${H / 2 - 24}px)`;
+    },
+  });
+</script>
+</body>
+</html>

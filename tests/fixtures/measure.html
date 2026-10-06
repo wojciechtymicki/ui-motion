@@ -1,0 +1,23 @@
+<!doctype html>
+<!-- ground truth for measure_motion.py: A ease.out 0.20+0.60, B inOut 0.35+0.70,
+     C spring k=380 c=20 (ζ≈0.513) from 0.50, D linear opacity 0.30+0.40 -->
+<html><head><meta charset="utf-8"><style>
+html,body{margin:0}#stage{position:relative;overflow:hidden;background:#fff}
+.b{position:absolute;left:24px;width:48px;height:48px;border-radius:10px;background:#2F5FD0}
+.b::after{content:"";position:absolute;left:10px;top:18px;width:28px;height:8px;border-radius:4px;background:#fff}
+</style></head><body><div id="stage">
+<div class="b" id="A" style="top:24px"></div><div class="b" id="B" style="top:112px"></div>
+<div class="b" id="C" style="top:200px"></div><div class="b" id="D" style="top:290px;left:520px;background:#18181B"></div>
+</div>
+<script src="../../templates/motion-runtime.js"></script>
+<script>
+const {tween, ease, spring, mix} = Motion; const $ = (id) => document.getElementById(id);
+const sC = spring({stiffness: 380, damping: 20});
+Motion.register({ name: "measure", version: 1, duration: 2, fps: 60, width: 640, height: 360,
+  seek(t) {
+    $("A").style.transform = `translateX(${tween(t, 0.20, 0.60, 0, 300, ease.out)}px)`;
+    $("B").style.transform = `translateX(${tween(t, 0.35, 0.70, 0, 300, ease.inOut)}px)`;
+    $("C").style.transform = `translateX(${mix(0, 300, sC(t - 0.50))}px)`;
+    $("D").style.opacity = tween(t, 0.30, 0.40, 0, 1, ease.linear);
+  } });
+</script></body></html>

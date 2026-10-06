@@ -1,0 +1,12 @@
+<!doctype html>
+<!-- test fixture: pop -->
+<html><head><meta charset="utf-8"><style>
+html,body{margin:0}#stage{position:relative;overflow:hidden;background:#fff}
+.b{position:absolute;left:20px;top:40px;width:40px;height:40px;border-radius:8px;background:#2F5FD0}
+</style></head><body><div id="stage"><div class="b" id="a"></div></div>
+<script src="../../templates/motion-runtime.js"></script>
+<script>
+const {tween, ease, mix} = Motion; const a = document.getElementById("a");
+Motion.register({ name: "pop", version: 1, duration: 2, fps: 30, width: 320, height: 120, loops: false,
+  seek(t) { let x = tween(t, 0.2, 1.2, 0, 240, ease.inOut); if (Math.floor(t*30+1e-6) === 21) x += 40; a.style.transform = `translateX(${x}px)`; } });
+</script></body></html>

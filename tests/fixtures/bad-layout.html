@@ -1,0 +1,18 @@
+<!doctype html>
+<!-- test fixture: animates layout properties, uses timers and Math.random; perf_test and lint_motion must fail it -->
+<html><head><meta charset="utf-8"><style>
+html,body{margin:0}#stage{position:relative;overflow:hidden;background:#fff}
+.b{position:absolute;top:40px;height:40px;border-radius:8px;background:#2F5FD0;transition: all 300ms}
+.row{position:absolute;left:20px;height:6px;background:#ddd}
+</style></head><body><div id="stage"><div class="b" id="a"></div></div>
+<script src="../../templates/motion-runtime.js"></script>
+<script>
+const {tween, ease} = Motion; const a = document.getElementById("a");
+const stage = document.getElementById("stage");
+for (let i = 0; i < 60; i++) { const r = document.createElement("div"); r.className = "row"; r.style.top = (90 + i * 4) + "px"; stage.appendChild(r); }
+const rows = [...document.querySelectorAll(".row")];
+setTimeout(() => {}, 0);
+Motion.register({ name: "bad-layout", version: 1, duration: 2, fps: 60, width: 320, height: 360,
+  seek(t) { a.style.left = tween(t, 0.2, 1.2, 20, 260, ease.out) + "px"; a.style.width = (40 + Math.random()) + "px";
+            rows.forEach((r, i) => r.style.width = tween(t, 0.2 + i * 0.01, 1, 0, 280, ease.out) + "px"); } });
+</script></body></html>

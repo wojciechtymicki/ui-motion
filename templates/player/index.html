@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Motion review</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/__player/player.css">
+</head>
+<body>
+<div class="app">
+
+  <main class="stage-area" id="stageArea">
+    <div class="stage-col" id="stageCol">
+      <div class="stage-meta">
+        <div class="stage-title">
+          <span class="anim-name" id="animName">Loading…</span>
+          <span class="anim-version" id="animVersion"></span>
+          <label class="picker" id="pickerWrap" hidden>
+            <span class="visually-hidden">Animation</span>
+            <select id="picker" aria-label="Switch animation"></select>
+          </label>
+        </div>
+        <div class="stage-info">
+          <button type="button" class="chip-toggle" id="reducedBtn" aria-pressed="false" title="Reload with ?reduced=1">Reduced motion</button>
+          <span class="mono" id="stageSize"></span>
+        </div>
+      </div>
+      <div class="stage" id="stage">
+        <iframe id="frame" title="Animation stage" tabindex="-1"></iframe>
+        <div class="stage-error" id="stageError" hidden></div>
+      </div>
+    </div>
+  </main>
+
+  <section class="timeline-panel" aria-label="Timeline">
+
+    <div class="toast" id="toast" role="status" aria-live="polite" hidden>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"></path></svg>
+      <span><span id="toastLabel">Copied</span> <span class="mono" id="toastText"></span></span>
+      <input id="toastInput" class="toast-input" readonly hidden aria-label="Text to copy">
+    </div>
+
+    <div class="controls">
+      <div class="transport">
+        <button type="button" class="icon-btn" id="startBtn" aria-label="Jump to start" title="Jump to start (Home)">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 5v14"></path><path d="M18 6l-9 6 9 6z"></path></svg>
+        </button>
+        <button type="button" class="play-btn" id="playBtn" aria-label="Play" title="Play / pause (Space)">
+          <svg class="i-pause" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1"></rect><rect x="14" y="5" width="4" height="14" rx="1"></rect></svg>
+          <svg class="i-play" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.5-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5z"></path></svg>
+        </button>
+        <button type="button" class="icon-btn" id="stopBtn" aria-label="Stop" title="Stop: pause and return to start">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="2"></rect></svg>
+        </button>
+        <button type="button" class="icon-btn toggle" id="loopBtn" aria-label="Loop" aria-pressed="true" title="Loop (L)">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 2l3 3-3 3"></path><path d="M4 11V9a4 4 0 0 1 4-4h12"></path><path d="M7 22l-3-3 3-3"></path><path d="M20 13v2a4 4 0 0 1-4 4H4"></path></svg>
+        </button>
+      </div>
+
+      <button type="button" class="copyable time-readout" id="timeBtn" title="Click to copy the current time (C)">
+        <span id="timeText">00:00.00</span> <span class="muted">/ <span id="durText">00:00.00</span><span id="fpsText"></span></span>
+      </button>
+
+      <div class="segmented" role="group" aria-label="Time units" id="unitsGroup">
+        <button type="button" data-units="s" aria-pressed="true">Seconds</button>
+        <button type="button" data-units="f" aria-pressed="false">Frames</button>
+      </div>
+
+      <div class="segmented mono-seg" role="group" aria-label="Playback speed" id="speedGroup">
+        <button type="button" data-speed="0.25" aria-pressed="false">0.25×</button>
+        <button type="button" data-speed="0.5" aria-pressed="false">0.5×</button>
+        <button type="button" data-speed="0.75" aria-pressed="false">0.75×</button>
+        <button type="button" data-speed="1" aria-pressed="true">1×</button>
+      </div>
+
+      <div class="range-ctl">
+        <span>Range</span>
+        <button type="button" class="copyable range-readout" id="rangeBtn" title="Click to copy the range">
+          <span id="rangeText">00:00.00 – 00:00.00</span>
+        </button>
+        <button type="button" class="reset-btn" id="resetBtn" title="Reset the range to the whole animation (R)" disabled>Reset</button>
+      </div>
+    </div>
+
+    <div class="track-wrap">
+      <div class="track" id="track">
+
+        <div class="ruler lane" id="ruler" title="Drag to scrub">
+          <div class="dim dim-before" id="dimBefore"></div>
+          <div class="dim dim-after" id="dimAfter"></div>
+          <div class="ticks" id="ticks"></div>
+        </div>
+
+        <div class="range-lane lane" id="rangeLane" title="Drag to select a time range">
+          <div class="range-empty" id="rangeEmpty" hidden></div>
+          <div class="range-body full" id="rangeBody" title="Click to copy · drag the handles to narrow · I / O set them at the playhead">
+            <button type="button" class="range-handle in" id="inHandle" aria-label="Range start"><span></span></button>
+            <button type="button" class="range-handle out" id="outHandle" aria-label="Range end"><span></span></button>
+          </div>
+        </div>
+
+        <div class="playhead" id="playhead">
+          <button type="button" class="knob" id="knob" aria-label="Playhead: drag to scrub, click to copy the time" title="Click to copy · drag to scrub"><span></span></button>
+          <div class="playhead-line"></div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+</div>
+<script src="/__player/player.js"></script>
+</body>
+</html>
