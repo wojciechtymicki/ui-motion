@@ -2,8 +2,7 @@
   "name": "ui-motion-skill-scripts",
   "private": true,
   "description": "Node test scripts for the ui-motion skill (perf_test, device_matrix, lint_motion, spring). No build step.",
-  "license": "UNLICENSED",
-  "dependencies": {
+    "dependencies": {
     "playwright": "^1.55.0"
   }
 }

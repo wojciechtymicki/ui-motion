@@ -22,8 +22,7 @@ You need **Claude Code**, **Python 3.9+**, **Node 18+** and **git**, on macOS or
 git clone https://github.com/wojciechtymicki/ui-motion.git ~/.claude/skills/ui-motion
 ```
 
-The repo is private, so use an account with access. `gh repo clone wojciechtymicki/ui-motion ~/.claude/skills/ui-motion`
-works as well. To install for a single project instead, clone into `<project>/.claude/skills/ui-motion`.
+To install for a single project instead, clone into `<project>/.claude/skills/ui-motion`.
 
 ### 2. Install the Python tools (rendering, checks, reference analysis)
 
@@ -203,4 +202,4 @@ evals/          sample briefs for comparing skill versions
 
 ## License
 
-UNLICENSED, internal.
+No license has been chosen yet, so all rights are reserved by the author.
