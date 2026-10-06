@@ -142,8 +142,8 @@ python $SKILL/scripts/serve.py <workdir>          # run in the background; print
 ```
 In the Claude desktop app, prefer the Browser pane's launcher over a background shell (background
 shells are stopped after their time limit): add a `.claude/launch.json` entry with
-`"runtimeExecutable": "/usr/bin/python3"` and `"runtimeArgs": ["<path>/scripts/serve.py", "<workdir>", "--port", "8765"]`,
-then `preview_start`. `serve.py` is standard-library only. Don't point the launcher at
+`"runtimeExecutable": "/usr/bin/python3"`, `"runtimeArgs": ["<path>/scripts/serve.py", "<workdir>"]` and
+`"autoPort": true` (no `--port`: serve.py uses the launcher's `$PORT`), then `preview_start`. `serve.py` is standard-library only. Don't point the launcher at
 `$SKILL/.venv/bin/python`: it symlinks into the Xcode app bundle, which the preview sandbox can't
 resolve ("realpath: Operation not permitted").
 The user scrubs, stops at a timestamp or selects a range, clicks to copy, and pastes it into Claude

@@ -148,7 +148,8 @@ def free_port(start: int) -> int:
 def main(argv=None):
     ap = argparse.ArgumentParser(description="Serve a motion project with the ui-motion review player.")
     ap.add_argument("project_dir", help="folder holding one or more animation .html files")
-    ap.add_argument("--port", type=int, default=8765, help="preferred port (next free one is used if taken)")
+    ap.add_argument("--port", type=int, default=None,
+                    help="preferred port (default: $PORT if set, else 8765; the next free one is used if taken)")
     ap.add_argument("--host", default="127.0.0.1")
     ap.add_argument("--open", action="store_true", help="open the player in the default browser")
     args = ap.parse_args(argv)
@@ -163,7 +164,12 @@ def main(argv=None):
         raise SystemExit(f"error: player not found at {PLAYER_DIR}")
 
     anims = find_animations(root)
-    port = free_port(args.port)
+    if args.port is not None:
+        port = free_port(args.port)
+    elif os.environ.get("PORT"):
+        port = int(os.environ["PORT"])     # assigned by a launcher (e.g. the Claude Browser pane): use it exactly
+    else:
+        port = free_port(8765)
     server = ThreadingHTTPServer((args.host, port), make_handler(root))
     url = f"http://{args.host}:{port}/"
     if focus is not None:

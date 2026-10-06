@@ -143,8 +143,8 @@ and bumps the version. The player reloads by itself and keeps your playhead, ran
 units.
 
 > In the Claude desktop app, the player can run in the Browser pane: add a `.claude/launch.json`
-> entry that runs `/usr/bin/python3 <skill>/scripts/serve.py <folder> --port 8765`. Use the system
-> Python there, not the skill's `.venv`.
+> entry that runs `/usr/bin/python3 <skill>/scripts/serve.py <folder>` with `"autoPort": true`
+> (the server then uses the port the app assigns). Use the system Python there, not the skill's `.venv`.
 
 ### Export your animation
 
