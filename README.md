@@ -146,27 +146,47 @@ units.
 > entry that runs `/usr/bin/python3 <skill>/scripts/serve.py <folder> --port 8765`. Use the system
 > Python there, not the skill's `.venv`.
 
-### Tools you can run directly
+### Export your animation
 
-Run these with `~/.claude/skills/ui-motion/.venv/bin/python` (Python) or `node` (`.js`). `<target>`
-is an animation folder, an `animation.html` or a URL.
+The easiest way is to ask Claude in plain words, for example:
 
-| Command | What it does |
-|---|---|
-| `scripts/new_project.py <name> --size 390x844 --duration 2.4` | scaffold a new animation folder |
-| `scripts/serve.py <folder>` | review player with auto-reload |
-| `scripts/render.py <target> --format mp4` | deterministic render (`mp4`, `webm-alpha`, `hevc-alpha`, `mov-alpha`, `gif`, `apng`, `png`) |
-| `scripts/contact_sheet.py <target> --times 0.5,1,1.5` | stills / strips (also `--range a b`, `--prompt "<pasted timestamp>"`) |
-| `scripts/jank_check.py <target>` | pops, one-frame glitches, flashes, stalls |
-| `scripts/loop_check.py <target>` | loop seam: position and velocity |
-| `scripts/extract_frames.py ref.mp4` | reference video/GIF → frames, real timing, cuts |
-| `scripts/measure_motion.py ref_mp4_frames` | reference timing, easing curve, springs, staggers |
-| `node scripts/perf_test.js <target> --cpu 4` | frame timing and layout/paint cost under CPU throttling |
-| `node scripts/device_matrix.js <target> --t 1.2` | viewports × pixel density × modes grid |
-| `node scripts/lint_motion.js <files>` | static checks on shipped motion code |
-| `node scripts/spring.js --stiffness 400 --damping 38` | spring → damping ratio, settle time, SwiftUI/Compose/Motion equivalents |
+```
+Export mg-onboarding-bag as an MP4 for our website
+Export mg-onboarding-bag with a transparent background
+Give me a GIF of mg-onboarding-bag for Slack
+```
 
-Every script has `--help`.
+Claude picks the right settings and tells you where the files are. Exports are saved in the
+animation's own `out/` folder, together with a **poster** image (a still of the final frame).
+
+**Which format do I need?**
+
+| You want to… | Ask for | Format |
+|---|---|---|
+| put it on a website, in a presentation or on social media | MP4 | `mp4` |
+| place it over other content (no background) on a website | transparent video | `webm-alpha` (Chrome, Firefox) **and** `hevc-alpha` (Safari, macOS only) |
+| edit it further in After Effects, Premiere or Final Cut | ProRes with transparency | `mov-alpha` |
+| share it in Slack, email or a doc | GIF | `gif` |
+| a looping image with transparency that works anywhere an image does | animated PNG | `apng` |
+| individual frames for a designer or developer | PNG sequence | `png` |
+| ship it inside an app (iOS, Android, Flutter, web) | ask Claude for the app version | Lottie or code, built from the same animation |
+
+Useful extras to mention when you ask: **"at 2× size"** for sharp retina output, and **"the
+reduced-motion version"** for the calmer variant shown to people who turn animations off.
+
+**Exporting yourself in Terminal (optional).** Use the same command and change the last part:
+
+```bash
+~/.claude/skills/ui-motion/.venv/bin/python ~/.claude/skills/ui-motion/scripts/render.py \
+  path/to/your-animation-folder --format mp4
+```
+
+Replace `mp4` with any format from the table. Add `--scale 2` for 2× size and `--reduced` for the
+reduced-motion version.
+
+> The skill comes with more helper scripts (quality checks, reference-video analysis, performance
+> tests). Claude runs them for you while it works, so you don't need them. Each one explains
+> itself with `--help` if you're curious.
 
 ---
 
